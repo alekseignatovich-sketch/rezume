@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Алексей | Разработчик ботов и автоматизации</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-darker: #0f0f0f;
+      --accent: #00ff41;
+      --accent-purple: #6c5ce7;
+      --text: #ffffff;
+      --text-secondary: #a0a0a0;
+      --widget-bg: #151515;
+      --widget-border: rgba(0, 255, 65, 0.2);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Matrix background effect */
+    canvas#matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.15;
+    }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar - Mihome style */
+    .sidebar {
+      width: 280px;
+      background-color: rgba(15, 15, 15, 0.95);
+      border-right: 1px solid var(--widget-border);
+      padding: 30px 20px;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+      transition: var(--transition);
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--widget-border);
+    }
+
+    .profile-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      margin: 15px 0 5px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .profile-location {
+      color: var(--text-secondary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .profile-rating {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 8px;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-item {
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(0, 255, 65, 0.08);
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background-color: rgba(0, 255, 65, 0.15);
+      border-left: 4px solid var(--accent);
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    }
+
+    .nav-item i {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+    }
+
+    .nav-item.active i {
+      color: var(--accent);
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 40px;
+      max-width: 1200px;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 42px;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .section-title i {
+      font-size: 48px;
+    }
+
+    /* Widgets grid */
+    .widgets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .widget {
+      background-color: var(--widget-bg);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      padding: 25px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .widget:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+      border-color: var(--accent);
+    }
+
+    .widget::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      transition: var(--transition);
+    }
+
+    .widget:hover::before {
+      left: 100%;
+    }
+
+    .widget-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background-color: rgba(0, 255, 65, 0.05);
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      background-color: rgba(0, 255, 65, 0.1);
+      transform: scale(1.05);
+    }
+
+    .stat-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px;
+      color: var(--accent);
+      margin: 5px 0;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Projects grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 25px;
+    }
+
+    .project-card {
+      background-color: var(--widget-bg);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      padding: 25px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 35px rgba(108, 92, 231, 0.3);
+    }
+
+    .project-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: var(--accent-purple);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .project-desc {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .project-tech {
+      background-color: rgba(108, 92, 231, 0.1);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .project-tech-title {
+      color: var(--accent-purple);
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .project-features {
+      margin-bottom: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .feature-icon {
+      color: var(--accent);
+      font-size: 18px;
+      min-width: 20px;
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #000;
+      font-weight: bold;
+    }
+
+    .btn-primary:hover {
+      background-color: #00e63a;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(0, 255, 65, 0.1);
+    }
+
+    /* Skills section */
+    .skills-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .skill-category {
+      background-color: var(--widget-bg);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      padding: 25px;
+    }
+
+    .skill-category-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: var(--accent-purple);
+    }
+
+    .skill-item {
+      margin-bottom: 18px;
+    }
+
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .skill-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .skill-level {
+      color: var(--accent);
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .skill-bar {
+      height: 8px;
+      background-color: rgba(0, 255, 65, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .skill-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1.5s ease-out;
+    }
+
+    /* Services section */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-top: 25px;
+    }
+
+    .service-card {
+      background-color: var(--widget-bg);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      padding: 25px;
+      position: relative;
+    }
+
+    .service-card:hover {
+      border-color: var(--accent);
+      transform: scale(1.03);
+    }
+
+    .service-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .service-items {
+      margin-bottom: 20px;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .service-price {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      color: var(--accent-purple);
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Contacts section */
+    .contacts-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: var(--widget-bg);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .contact-item {
+      margin: 25px 0;
+    }
+
+    .contact-label {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .contact-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    .contact-value a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .contact-value a:hover {
+      text-shadow: 0 0 15px var(--accent);
+    }
+
+    .location-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-top: 10px;
+    }
+
+    /* Robo-Kitty Video Assistant */
+    .robo-kitty-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 280px;
+      z-index: 1000;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--accent);
+    }
+
+    .robo-kitty-video {
+      width: 100%;
+      display: block;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .robo-kitty-video:hover {
+      transform: scale(1.02);
+    }
+
+    .robo-kitty-label {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--accent);
+      font-size: 16px;
+      text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 80px;
+        padding: 25px 10px;
+      }
+      .profile-name,
+      .profile-location,
+      .profile-rating,
+      .nav-item span {
+        display: none;
+      }
+      .nav-item {
+        justify-content: center;
+        padding: 16px;
+      }
+      .nav-item i {
+        font-size: 24px;
+      }
+      .main-content {
+        margin-left: 80px;
+        padding: 30px;
+      }
+      .widgets-grid,
+      .projects-grid,
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+      .skills-container {
+        grid-template-columns: 1fr;
+      }
+      .robo-kitty-container {
+        width: 220px;
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      .main-content {
+        margin-left: 70px;
+        padding: 20px;
+      }
+      .section-title {
+        font-size: 32px;
+      }
+      .robo-kitty-container {
+        width: 180px;
+        bottom: 15px;
+        right: 15px;
+      }
+      .robo-kitty-label {
+        font-size: 14px;
+      }
+    }
+
+    /* Icons (using Unicode symbols) */
+    .icon {
+      display: inline-block;
+      width: 24px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Matrix background -->
+  <canvas id="matrix"></canvas>
+
+  <!-- App layout -->
+  <div class="app-container">
+    <!-- Sidebar (Mihome style) -->
+    <div class="sidebar">
+      <div class="profile">
+        <div class="profile-name">Алексей</div>
+        <div class="profile-location">🇧🇾 Беларусь</div>
+        <div class="profile-rating">⭐ Рейтинг: 5.0</div>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item active" data-section="home">
+          <span class="icon">🏠</span>
+          <span>Главная</span>
+        </li>
+        <li class="nav-item" data-section="bots">
+          <span class="icon">🤖</span>
+          <span>Мои боты</span>
+        </li>
+        <li class="nav-item" data-section="automation">
+          <span class="icon">⚡</span>
+          <span>Автоматизация</span>
+        </li>
+        <li class="nav-item" data-section="digital">
+          <span class="icon">📦</span>
+          <span>Цифровые товары</span>
+        </li>
+        <li class="nav-item" data-section="services">
+          <span class="icon">🎯</span>
+          <span>Услуги</span>
+        </li>
+        <li class="nav-item" data-section="skills">
+          <span class="icon">📊</span>
+          <span>Навыки</span>
+        </li>
+        <li class="nav-item" data-section="stats">
+          <span class="icon">📈</span>
+          <span>Статистика</span>
+        </li>
+        <li class="nav-item" data-section="contacts">
+          <span class="icon">📧</span>
+          <span>Контакты</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Home Section -->
+      <section id="home" class="section active">
+        <h1 class="section-title"><span class="icon">👨‍💻</span> Главная</h1>
+        <div class="widgets-grid">
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">👋</span> Приветствие</h2>
+            <p style="font-size: 18px; line-height: 1.7; color: var(--text-secondary);">
+              👋 Привет! Я Алексей — разработчик умных ботов и систем автоматизации.<br><br>
+              🤖 Создаю многоязычных ботов для бизнеса под ключ.<br>
+              ⚡ Автоматизирую рутинные процессы и синхронизацию контента.<br>
+              📦 Разрабатываю цифровые продукты для продажи в Telegram и на маркетплейсах.<br>
+              🤯 Внедряю искусственный интеллект в повседневные задачи.
+            </p>
+            <div style="display: flex; gap: 15px; margin-top: 25px;">
+              <button class="btn btn-primary" onclick="navigateTo('bots')">
+                <span class="icon">🤖</span> Мои боты
+              </button>
+              <button class="btn btn-secondary" onclick="navigateTo('services')">
+                <span class="icon">💼</span> Услуги
+              </button>
+            </div>
+          </div>
+
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">📈</span> Статистика</h2>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Ботов создано</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">28+</div>
+                <div class="stat-label">Автоматизаций</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Цифровых товаров</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Языков поддержки</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">🎯</span> Специализация</h2>
+            <ul style="list-style: none; padding-left: 0; line-height: 2.2;">
+              <li>🤖 Telegram боты (каталоги, опросники, техподдержка)</li>
+              <li>⚡ Системы автоматизации бизнес-процессов</li>
+              <li>📦 Цифровые товары для продажи</li>
+              <li>🤯 AI-интеграции и умные ассистенты</li>
+              <li>🌐 Мультиязычные решения (до 5 языков)</li>
+            </ul>
+          </div>
+
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">🚀</span> Последние проекты</h2>
+            <ul style="list-style: none; padding-left: 0; line-height: 2;">
+              <li>📦 Бот-каталог с корзиной и оплатой</li>
+              <li>🤔 Бот-опросник для сбора ТЗ</li>
+              <li>🛎️ Бот техподдержки с AI-ответами</li>
+              <li>⏰ Бот-напоминалка для бизнеса</li>
+              <li>🧭 Бот-гид по услугам компании</li>
+              <li>🎣 Бот-лидмагнит с геймификацией</li>
+              <li style="margin-top: 15px;"><button class="btn btn-secondary" onclick="navigateTo('bots')">Все проекты →</button></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bots Section -->
+      <section id="bots" class="section">
+        <h1 class="section-title"><span class="icon">🤖</span> Мои боты</h1>
+        <div class="projects-grid">
+          <!-- Бот-каталог -->
+          <div class="project-card">
+            <h2 class="project-title"><span class="icon">📦</span> Бот-каталог</h2>
+            <p class="project-desc">Интерактивный каталог товаров с возможностью заказа и оплаты прямо в Telegram.</p>
+            <div class="project-tech">
+              <div class="project-tech-title">🛠️ Технологии:</div>
+              Telegram Bot API, База данных, Система корзины, Интеграция платежей
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">✨</span>
+                <span>Гибкая настройка под любой бизнес</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🌍</span>
+                <span>Мультиязычность (до 5 языков)</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <span>Аналитика продаж в реальном времени</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn btn-primary">Демо</button>
+              <button class="btn btn-secondary">Подробнее</button>
+            </div>
+          </div>
+
+          <!-- Бот-опросник -->
+          <div class="project-card">
+            <h2 class="project-title"><span class="icon">🤔</span> Бот-опросник</h2>
+            <p class="project-desc">Сбор информации от клиентов для автоматического формирования технического задания.</p>
+            <div class="project-tech">
+              <div class="project-tech-title">🛠️ Технологии:</div>
+              Динамические формы, Валидация данных, Экспорт в ТЗ, Примеры в полях ввода
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">💡</span>
+                <span>Развернутые вопросы с примерами</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🌐</span>
+                <span>Выбор языка заполнения брифа</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⚡</span>
+                <span>Автоматическое формирование ТЗ</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn btn-primary">Демо</button>
+              <button class="btn btn-secondary">Подробнее</button>
+            </div>
+          </div>
+
+          <!-- Бот техподдержки -->
+          <div class="project-card">
+            <h2 class="project-title"><span class="icon">🛎️</span> Бот техподдержки</h2>
+            <p class="project-desc">Автоматизированная поддержка клиентов с креативными и юмористическими AI-ответами.</p>
+            <div class="project-tech">
+              <div class="project-tech-title">🛠️ Технологии:</div>
+              NLP обработка запросов, База знаний, Эскалация к оператору, Мультиязычность
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">🎭</span>
+                <span>Креативные и юмористические ответы</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🌍</span>
+                <span>Поддержка до 5 языков</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⚡</span>
+                <span>Мгновенные ответы 24/7</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn btn-primary">Демо</button>
+              <button class="btn btn-secondary">Подробнее</button>
+            </div>
+          </div>
+
+          <!-- Бот-напоминалка -->
+          <div class="project-card">
+            <h2 class="project-title"><span class="icon">⏰</span> Бот-напоминалка</h2>
+            <p class="project-desc">Система напоминаний о сроках, времени, ошибках и улучшениях для бизнеса.</p>
+            <div class="project-tech">
+              <div class="project-tech-title">🛠️ Технологии:</div>
+              Планировщик задач, Уведомления, Интеграция с календарём, Персонализация
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">⏱️</span>
+                <span>Гибкие настройки времени напоминаний</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🔄</span>
+                <span>Повторяющиеся напоминания</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">👤</span>
+                <span>Персонализация под каждого пользователя</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn btn-primary">Демо</button>
+              <button class="btn btn-secondary">Подробнее</button>
+            </div>
+          </div>
+
+          <!-- Бот-гид по услугам -->
+          <div class="project-card">
+            <h2 class="project-title"><span class="icon">🧭</span> Бот-гид по услугам</h2>
+            <p class="project-desc">Интерактивный гид по услугам компании с подробными описаниями и возможностью записи.</p>
+            <div class="project-tech">
+              <div class="project-tech-title">🛠️ Технологии:</div>
+              Дерево услуг, Поиск и фильтрация, Запись на услугу, Интеграция с CRM
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">🗺️</span>
+                <span>Интуитивная навигация по услугам</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🌍</span>
+                <span>Мультиязычность</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⚡</span>
+                <span>Мгновенная запись на услугу</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn btn-primary">Демо</button>
+              <button class="btn btn-secondary">Подробнее</button>
+            </div>
+          </div>
+
+          <!-- Бот-лидмагнит -->
+          <div class="project-card">
+            <h2 class="project-title"><span class="icon">🎣</span> Бот-лидмагнит</h2>
+            <p class="project-desc">Привлечение и сбор контактов потенциальных клиентов с геймификацией и юмором.</p>
+            <div class="project-tech">
+              <div class="project-tech-title">🛠️ Технологии:</div>
+              Виральный маркетинг, Геймификация, CRM интеграция, A/B тестирование
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">🎭</span>
+                <span>Креативные и юмористические ответы</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🌍</span>
+                <span>Поддержка до 5 языков</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📈</span>
+                <span>Анализ конверсии и оптимизация</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn btn-primary">Демо</button>
+              <button class="btn btn-secondary">Подробнее</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Automation Section -->
+      <section id="automation" class="section">
+        <h1 class="section-title"><span class="icon">⚡</span> Автоматизация</h1>
+        <div class="widgets-grid">
+          <!-- Система синхронизации контента -->
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">🔄</span> Система синхронизации контента</h2>
+            <p class="project-desc" style="margin-bottom: 20px;">
+              Автоматическая синхронизация публикаций между сайтом, социальными сетями и YouTube.
+            </p>
+            <div style="background-color: rgba(108, 92, 231, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 25px;">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 8px;">🔄 Схема работы:</div>
+              <div style="display: flex; align-items: center; gap: 10px; font-family: 'Orbitron', sans-serif; justify-content: center;">
+                <span style="color: var(--accent);">Telegram</span>
+                <span>→</span>
+                <span style="color: var(--accent);">Админ-панель</span>
+                <span>→</span>
+                <span style="color: var(--accent);">Все платформы</span>
+              </div>
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">📤</span>
+                <span>Загрузка постов из Telegram в админ-панель</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🔄</span>
+                <span>Автоматическая публикация во все указанные платформы</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⏱️</span>
+                <span>Экономия до 5 часов в неделю на рутинной публикации</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📱</span>
+                <span>Поддержка: сайт, Telegram, Instagram, VK, YouTube</span>
+              </div>
+            </div>
+            <div style="margin-top: 25px;">
+              <button class="btn btn-primary">Демо системы</button>
+            </div>
+          </div>
+
+          <!-- Автономная система создания контента -->
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">🤖</span> Автономная система создания контента</h2>
+            <p class="project-desc" style="margin-bottom: 20px;">
+              Полностью автоматизированная система, которая сама выбирает темы, создаёт и публикует контент для продажи.
+            </p>
+            <div style="background-color: rgba(108, 92, 231, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 25px;">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 8px;">🔄 Этапы автоматизации:</div>
+              <ol style="padding-left: 20px; color: var(--text-secondary);">
+                <li>Сбор трендов и актуальных тем</li>
+                <li>Генерация материала (обучающий контент, гайды)</li>
+                <li>Автоматическая публикация</li>
+                <li>Монетизация через продажи</li>
+              </ol>
+            </div>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">🧠</span>
+                <span>AI самостоятельно выбирает актуальные темы</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">✍️</span>
+                <span>Генерация качественного контента без участия человека</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">💰</span>
+                <span>Полный цикл монетизации "под ключ"</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⏱️</span>
+                <span>Минимальное участие человека на всех этапах</span>
+              </div>
+            </div>
+            <div style="margin-top: 25px;">
+              <button class="btn btn-primary">Подробнее о системе</button>
+            </div>
+          </div>
+
+          <!-- Календарь проектов с AI -->
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">📅</span> Календарь проектов с ИИ</h2>
+            <p class="project-desc" style="margin-bottom: 20px;">
+              Умный календарь для управления проектами с поддержкой искусственного интеллекта.
+            </p>
+            <div class="project-features">
+              <div class="feature-item">
+                <span class="feature-icon">📅</span>
+                <span>Визуализация всех проектов в одном интерфейсе</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⏰</span>
+                <span>Автоматические напоминания о сроках и дедлайнах</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <span>Отслеживание прогресса и аналитика выполнения</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">⚡</span>
+                <span>Интеграция с Telegram, Google Calendar и другими инструментами</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🤖</span>
+                <span>AI-помощник для оптимизации графика и приоритетов</span>
+              </div>
+            </div>
+            <div style="margin-top: 25px;">
+              <button class="btn btn-primary">Демо календаря</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Digital Products Section -->
+      <section id="digital" class="section">
+        <h1 class="section-title"><span class="icon">📦</span> Цифровые товары</h1>
+        <div class="widgets-grid">
+          <!-- Шаблоны ботов -->
+          <div class="widget">
+            <h2 class="widget-title"><span class="icon">📐</span> Шаблоны ботов</h2>
+            <p class="project-desc" style="margin-bottom: 25px;">
+              Продажа готовых шаблонов ботов с возможностью настройки под конкретного клиента.
+            </p>
+            <div style="margin-bottom: 25px;">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 15px;">📦 Доступные шаблоны:</div>
+              <ul style="list-style: none; padding-left: 0; line-height: 2.2; color: var(--text-secondary);">
+                <li>• Бот-каталог — от $99</li>
+                <li>• Бот-опросник — от $79</li>
+                <li>• Бот техподдержки — от $129</li>
+                <li>• Бот-напоминалка — от $59</li>
+                <li>• Бот-гид по услугам — от $89</li>
+                <li>• Бот-лидмагнит — от $149</li>
+              </ul>
+            </div>
+            <div style="background-color: rgba(0, 255, 65, 0.08); padding: 15px; border-radius: 10px; margin-bottom: 25px;">
+              <div style="font-weight: bold; color: var(--accent); margin-bottom: 8px;">✨ Что входит:</div>
+              <ul style="list-style: none; padding-left: 0; line-height: 1.8; font-size: 14px;">
+                <li>✓ Готовый рабочий код</li>
+                <li>✓ Подробная документация</li>
+                <li>✓ Настройка под клиента</li>
+                <li>✓ Техподдержка 30 дней</li>
+              </ul>
+            </div>
+            <button class="btn btn-primary">Посмотреть демо шаблонов</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section -->
+      <section id="services" class="section">
+        <h1 class="section-title"><span class="icon">🎯</span> Услуги</h1>
+        <div class="services-grid">
+          <!-- Разработка ботов -->
+          <div class="service-card">
+            <h2 class="service-title"><span class="icon">🤖</span> Разработка ботов</h2>
+            <div class="service-items">
+              <div class="service-item">
+                <span class="feature-icon">⚙️</span>
+                <span>Создание ботов с нуля под задачи бизнеса</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">🎨</span>
+                <span>Кастомизация готовых шаблонов</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">🔌</span>
+                <span>Интеграция с внешними API и сервисами</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">🌐</span>
+                <span>Мультиязычная поддержка (до 5 языков)</span>
+              </div>
+            </div>
+            <div class="service-price">От $300</div>
+          </div>
+
+          <!-- Автоматизация процессов -->
+          <div class="service-card">
+            <h2 class="service-title"><span class="icon">⚡</span> Автоматизация процессов</h2>
+            <div class="service-items">
+              <div class="service-item">
+                <span class="feature-icon">🔍</span>
+                <span>Анализ бизнес-процессов на предмет автоматизации</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">⚙️</span>
+                <span>Создание автоматизированных систем "под ключ"</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">🔄</span>
+                <span>Интеграция с существующими сервисами</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">📚</span>
+                <span>Обучение персонала работе с системой</span>
+              </div>
+            </div>
+            <div class="service-price">От $500</div>
+          </div>
+
+          <!-- Цифровые продукты -->
+          <div class="service-card">
+            <h2 class="service-title"><span class="icon">📱</span> Цифровые продукты</h2>
+            <div class="service-items">
+              <div class="service-item">
+                <span class="feature-icon">🚀</span>
+                <span>Разработка цифровых продуктов с нуля</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">📈</span>
+                <span>Продвижение в Telegram и соцсетях</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">💰</span>
+                <span>Настройка монетизации и продаж</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">⚙️</span>
+                <span>Техническая поддержка после запуска</span>
+              </div>
+            </div>
+            <div class="service-price">От $800</div>
+          </div>
+
+          <!-- AI интеграции -->
+          <div class="service-card">
+            <h2 class="service-title"><span class="icon">🤯</span> AI интеграции</h2>
+            <div class="service-items">
+              <div class="service-item">
+                <span class="feature-icon">🧠</span>
+                <span>Анализ возможностей внедрения ИИ в бизнес</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">⚙️</span>
+                <span>Интеграция готовых AI-решений</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">🎓</span>
+                <span>Обучение моделей под задачи клиента</span>
+              </div>
+              <div class="service-item">
+                <span class="feature-icon">⚡</span>
+                <span>Оптимизация и масштабирование решений</span>
+              </div>
+            </div>
+            <div class="service-price">От $1000</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+          <button class="btn btn-primary" style="padding: 15px 40px; font-size: 18px;" onclick="navigateTo('contacts')">
+            <span class="icon">📩</span> Заказать услугу
+          </button>
+        </div>
+      </section>
+
+      <!-- Skills Section -->
+      <section id="skills" class="section">
+        <h1 class="section-title"><span class="icon">📊</span> Навыки</h1>
+        <div class="skills-container">
+          <!-- Technical Skills -->
+          <div class="skill-category">
+            <h2 class="skill-category-title">💻 Технические навыки</h2>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Telegram Bot API</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">JavaScript / Node.js</span>
+                <span class="skill-level">90%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="90"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Python</span>
+                <span class="skill-level">80%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="80"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Базы данных</span>
+                <span class="skill-level">80%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="80"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">HTML / CSS</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">API интеграции</span>
+                <span class="skill-level">90%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="90"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Мультиязычность</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Soft Skills -->
+          <div class="skill-category">
+            <h2 class="skill-category-title">🧠 Мягкие навыки</h2>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Креативность</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Коммуникация</span>
+                <span class="skill-level">90%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="90"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Тайм-менеджмент</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Юмор</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Самообучение</span>
+                <span class="skill-level">100%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="100"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Решение проблем</span>
+                <span class="skill-level">90%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-progress" data-percent="90"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section id="stats" class="section">
+        <h1 class="section-title"><span class="icon">📈</span> Статистика</h1>
+        <div class="widgets-grid">
+          <div class="widget" style="grid-column: span 2;">
+            <h2 class="widget-title"><span class="icon">📊</span> Live Statistics</h2>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number" id="bots-count">0</div>
+                <div class="stat-label">Ботов создано</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="auto-count">0</div>
+                <div class="stat-label">Автоматизаций</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="products-count">0</div>
+                <div class="stat-label">Цифровых товаров</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="langs-count">0</div>
+                <div class="stat-label">Языков поддержки</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="hours-count">0</div>
+                <div class="stat-label">Экономия времени (часов)</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="projects-count">0</div>
+                <div class="stat-label">Проектов завершено</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="clients-count">0</div>
+                <div class="stat-label">Довольных клиентов</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">5.0</div>
+                <div class="stat-label">Средний рейтинг</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contacts Section -->
+      <section id="contacts" class="section">
+        <h1 class="section-title"><span class="icon">📧</span> Контакты</h1>
+        <div class="contacts-container">
+          <div class="contact-item">
+            <span class="contact-label">📧 Email</span>
+            <div class="contact-value">
+              <a href="mailto:alekseignatovich@gmail.com">alekseignatovich@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">📱 Telegram</span>
+            <div class="contact-value">
+              <a href="https://t.me/alekseyigna" target="_blank">@alekseyigna</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">📍 Локация</span>
+            <div class="location-item">🇧🇾 Беларусь</div>
+          </div>
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--widget-border);">
+            <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 20px;">
+              Готов обсудить ваш проект и предложить решение под ваши задачи!
+            </p>
+            <button class="btn btn-primary" style="padding: 12px 35px; font-size: 16px;">
+              <span class="icon">💬</span> Написать в Telegram
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Robo-Kitty Assistant (Video) -->
+  <div class="robo-kitty-container" id="roboKitty">
+    <video class="robo-kitty-video" id="kittyVideo" muted loop playsinline>
+      <!-- Замени на свою ссылку на видео с роботом-котёнком -->
+      <source src="https://storage.googleapis.com/coverr-main/mp4/Beach-1280x720.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+    <div class="robo-kitty-label">🐱🤖 Robo-Kitty Assistant</div>
+  </div>
+
+  <script>
+    // Matrix background effect
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const letters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789';
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    
+    const drops = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * -100;
+    }
+    
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#00ff41';
+      ctx.font = fontSize + 'px monospace';
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        
+        drops[i]++;
+      }
+    }
+    
+    setInterval(draw, 50);
+    
+    // Navigation
+    function navigateTo(sectionId) {
+      // Remove active class from all sections and nav items
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Add active class to target section and nav item
+      document.getElementById(sectionId).classList.add('active');
+      document.querySelector(`.nav-item[data-section="${sectionId}"]`).classList.add('active');
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // Nav item click handlers
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const sectionId = item.getAttribute('data-section');
+        navigateTo(sectionId);
+      });
+    });
+    
+    // Robo-Kitty video interaction
+    const kittyVideo = document.getElementById('kittyVideo');
+    const roboKitty = document.getElementById('roboKitty');
+    
+    roboKitty.addEventListener('click', () => {
+      // Показать уведомление с информацией
+      alert('🐱🤖 Привет! Я Робо-Котёнок — ассистент Алексея!\n\nХочешь узнать о его проектах? Напиши ему в Telegram: @alekseyigna');
+    });
+    
+    // Animate skill bars when skills section is shown
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            document.querySelectorAll('.skill-progress').forEach(bar => {
+              const percent = bar.getAttribute('data-percent');
+              bar.style.width = percent + '%';
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      const skillsSection = document.querySelector('#skills');
+      if (skillsSection) {
+        observer.observe(skillsSection);
+      }
+      
+      // Animate stats counters
+      const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter('bots-count', 0, 15, 1000);
+            animateCounter('auto-count', 0, 28, 1200);
+            animateCounter('products-count', 0, 50, 1400);
+            animateCounter('langs-count', 0, 5, 800);
+            animateCounter('hours-count', 0, 1000, 1600);
+            animateCounter('projects-count', 0, 24, 1300);
+            animateCounter('clients-count', 0, 18, 1500);
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      const statsSection = document.querySelector('#stats');
+      if (statsSection) {
+        statsObserver.observe(statsSection);
+      }
+    });
+    
+    function animateCounter(id, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        document.getElementById(id).textContent = value + (id === 'hours-count' ? '+' : '');
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+    
+    // Responsive sidebar toggle (for mobile)
+    let sidebarExpanded = true;
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 1100 && sidebarExpanded) {
+        document.querySelector('.sidebar').style.width = '80px';
+        document.querySelectorAll('.profile-name, .profile-location, .profile-rating, .nav-item span').forEach(el => {
+          el.style.display = 'none';
+        });
+        sidebarExpanded = false;
+      } else if (window.innerWidth > 1100 && !sidebarExpanded) {
+        document.querySelector('.sidebar').style.width = '280px';
+        document.querySelectorAll('.profile-name, .profile-location, .profile-rating, .nav-item span').forEach(el => {
+          el.style.display = 'block';
+        });
+        sidebarExpanded = true;
+      }
+    });
+    
+    // Set canvas size on resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
