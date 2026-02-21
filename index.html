@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Разработчик ботов и автоматизации</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <title>Dev Studio | Разработчик ботов и автоматизации</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -35,6 +35,7 @@
       position: relative;
       min-height: 100vh;
       touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
     }
 
     /* Matrix background effect */
@@ -702,21 +703,25 @@
       pointer-events: all;
     }
 
-    /* AI Modal */
+    /* AI Modal - исправленная версия для мобильных */
     .ai-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(10, 10, 10, 0.95);
+      height: -webkit-fill-available;
+      background: rgba(10, 10, 10, 0.97);
       z-index: 2000;
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      padding-top: max(env(safe-area-inset-top), 20px);
+      padding-bottom: max(env(safe-area-inset-bottom), 20px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
+      touch-action: manipulation;
     }
 
     .ai-modal.active {
@@ -728,28 +733,36 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid var(--widget-border);
+      margin-bottom: 15px;
+      padding: 0 10px;
+      z-index: 10;
     }
 
     .ai-modal-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 28px;
+      font-size: 24px;
       color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80%;
     }
 
     .ai-modal-close {
       background: none;
       border: 2px solid var(--accent);
       color: var(--accent);
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       font-family: 'Orbitron', sans-serif;
-      font-size: 20px;
+      font-size: 24px;
       cursor: pointer;
       transition: var(--transition);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .ai-modal-close:hover {
@@ -760,26 +773,29 @@
     .ai-content {
       display: flex;
       flex: 1;
-      gap: 30px;
+      gap: 20px;
       max-width: 1400px;
       margin: 0 auto;
       width: 100%;
+      min-height: 0;
     }
 
     .ai-video-container {
       flex: 1;
       min-width: 300px;
-      border-radius: 24px;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
-      border: 3px solid var(--accent);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--accent);
+      display: none;
     }
 
     .ai-video {
       width: 100%;
       height: 100%;
-      min-height: 400px;
+      min-height: 300px;
       object-fit: cover;
+      display: block;
     }
 
     .ai-chat-container {
@@ -791,30 +807,30 @@
       border-radius: 24px;
       border: 1px solid var(--widget-border);
       overflow: hidden;
+      height: 100%;
+      max-height: calc(100vh - 120px);
     }
 
     .ai-chat-messages {
       flex: 1;
-      padding: 25px;
+      padding: 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      max-height: calc(100vh - 250px);
+      gap: 18px;
+      max-height: calc(100% - 140px);
+      -webkit-overflow-scrolling: touch;
     }
 
     .ai-message {
-      max-width: 90%;
-      padding: 16px 20px;
+      max-width: 88%;
+      padding: 14px 18px;
       border-radius: 18px;
-      line-height: 1.6;
+      line-height: 1.55;
       font-size: 16px;
       animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      word-break: break-word;
+      position: relative;
     }
 
     .ai-message.user {
@@ -831,16 +847,48 @@
       border-bottom-left-radius: 6px;
     }
 
+    .ai-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 20px 15px;
+      max-height: 100px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ai-suggestion {
+      background: rgba(108, 92, 231, 0.15);
+      border: 1px solid var(--accent-purple);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 50px;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .ai-suggestion:hover {
+      background: rgba(108, 92, 231, 0.25);
+      transform: scale(1.03);
+    }
+
     .ai-chat-input {
-      padding: 20px;
+      padding: 15px 20px;
       border-top: 1px solid var(--widget-border);
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 5;
+      flex-shrink: 0;
     }
 
     .ai-chat-input input {
       flex: 1;
-      padding: 16px 20px;
+      padding: 14px 20px;
       border-radius: 50px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--widget-border);
@@ -849,55 +897,46 @@
       font-size: 16px;
       outline: none;
       transition: var(--transition);
+      min-height: 48px;
+      max-height: 120px;
+      overflow-y: auto;
+      resize: none;
     }
 
     .ai-chat-input input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+      box-shadow: 0 0 12px rgba(0, 255, 65, 0.25);
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .ai-chat-input button {
-      padding: 16px 28px;
-      border-radius: 50px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
       background: var(--accent);
       color: #000;
       font-family: 'Orbitron', sans-serif;
       font-weight: bold;
+      font-size: 20px;
       border: none;
       cursor: pointer;
       transition: var(--transition);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .ai-chat-input button:hover {
       background: #00e63a;
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
 
-    .ai-suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 0 25px 20px;
+    .ai-chat-input button:active {
+      transform: scale(0.95);
     }
 
-    .ai-suggestion {
-      background: rgba(108, 92, 231, 0.15);
-      border: 1px solid var(--accent-purple);
-      color: var(--text);
-      padding: 10px 16px;
-      border-radius: 50px;
-      font-family: 'Space Mono', monospace;
-      font-size: 14px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .ai-suggestion:hover {
-      background: rgba(108, 92, 231, 0.25);
-      transform: scale(1.03);
-    }
-
-    /* Responsive */
+    /* Mobile optimizations */
     @media (max-width: 1100px) {
       .sidebar {
         width: 260px;
@@ -939,11 +978,16 @@
       .ai-content {
         flex-direction: column;
       }
-      .ai-video-container, .ai-chat-container {
+      .ai-video-container {
+        display: block;
         min-width: 100%;
+        max-height: 300px;
       }
       .ai-video {
-        min-height: 300px;
+        min-height: 200px;
+      }
+      .ai-chat-container {
+        max-height: calc(100vh - 380px);
       }
     }
 
@@ -1011,17 +1055,48 @@
         bottom: 14px;
       }
       .ai-modal {
-        padding: 15px;
+        padding: max(env(safe-area-inset-top), 10px) 10px max(env(safe-area-inset-bottom), 10px) 10px;
+      }
+      .ai-modal-header {
+        padding: 0 5px;
       }
       .ai-modal-title {
-        font-size: 24px;
+        font-size: 22px;
+        max-width: 70%;
+      }
+      .ai-chat-container {
+        border-radius: 20px;
+        max-height: calc(100vh - 350px);
       }
       .ai-chat-messages {
-        padding: 20px;
-        max-height: calc(100vh - 220px);
+        padding: 15px;
+        gap: 15px;
+        max-height: calc(100% - 130px);
+      }
+      .ai-message {
+        font-size: 15px;
+        padding: 12px 16px;
       }
       .ai-suggestions {
-        padding: 0 20px 15px;
+        padding: 0 15px 12px;
+        gap: 6px;
+      }
+      .ai-suggestion {
+        padding: 7px 12px;
+        font-size: 13px;
+      }
+      .ai-chat-input {
+        padding: 12px 15px;
+      }
+      .ai-chat-input input {
+        padding: 12px 18px;
+        font-size: 16px;
+        min-height: 46px;
+      }
+      .ai-chat-input button {
+        width: 46px;
+        height: 46px;
+        font-size: 19px;
       }
     }
 
@@ -1107,15 +1182,58 @@
       .menu-toggle span {
         width: 22px;
       }
-      .ai-modal-header {
-        flex-direction: column;
-        gap: 15px;
+      .ai-modal {
+        padding: max(env(safe-area-inset-top), 10px) 8px max(env(safe-area-inset-bottom), 10px) 8px;
+      }
+      .ai-modal-title {
+        font-size: 20px;
+      }
+      .ai-modal-close {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+      }
+      .ai-video-container {
+        max-height: 250px;
+        border-radius: 18px;
+      }
+      .ai-video {
+        min-height: 180px;
+        border-radius: 18px;
+      }
+      .ai-chat-container {
+        border-radius: 18px;
+        max-height: calc(100vh - 320px);
+      }
+      .ai-chat-messages {
+        padding: 12px;
+        max-height: calc(100% - 120px);
+      }
+      .ai-message {
+        max-width: 85%;
+        font-size: 15px;
+        padding: 11px 15px;
+        line-height: 1.5;
+      }
+      .ai-suggestions {
+        padding: 0 12px 10px;
+      }
+      .ai-suggestion {
+        padding: 6px 11px;
+        font-size: 13px;
       }
       .ai-chat-input {
-        flex-direction: column;
+        padding: 10px 12px;
+      }
+      .ai-chat-input input {
+        padding: 11px 16px;
+        min-height: 44px;
+        border-radius: 48px;
       }
       .ai-chat-input button {
-        width: 100%;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
       }
     }
 
@@ -2417,10 +2535,10 @@
     <div class="robo-kitty-label">🐱🤖 Robo-Kitty</div>
   </div>
 
-  <!-- AI Modal -->
+  <!-- AI Modal (исправленная версия для мобильных) -->
   <div class="ai-modal" id="aiModal">
     <div class="ai-modal-header">
-      <div class="ai-modal-title">🤖 Robo-Kitty AI Assistant</div>
+      <div class="ai-modal-title">🐱🤖 Robo-Kitty Assistant</div>
       <button class="ai-modal-close" id="aiModalClose">×</button>
     </div>
     <div class="ai-content">
@@ -2493,7 +2611,6 @@
     
     // Navigation
     function navigateTo(sectionId) {
-      // Close mobile menu if open
       const sidebar = document.getElementById('sidebar');
       const menuToggle = document.getElementById('menuToggle');
       const backdrop = document.getElementById('backdrop');
@@ -2505,7 +2622,6 @@
         document.body.style.overflow = 'auto';
       }
       
-      // Remove active class from all sections and nav items
       document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
       });
@@ -2513,22 +2629,18 @@
         item.classList.remove('active');
       });
       
-      // Add active class to target section and nav item
       document.getElementById(sectionId).classList.add('active');
       document.querySelector(`.nav-item[data-section="${sectionId}"]`).classList.add('active');
       
-      // Scroll to top smoothly
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
-    // Nav item click handlers
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => {
         const sectionId = item.getAttribute('data-section');
         navigateTo(sectionId);
       });
       
-      // Add touch feedback for mobile
       item.addEventListener('touchstart', () => {
         item.style.transform = 'translateX(6px)';
       });
@@ -2570,7 +2682,6 @@
       aiModal.classList.add('active');
       document.body.style.overflow = 'hidden';
       
-      // Focus input after modal opens
       setTimeout(() => {
         aiChatInput.focus();
       }, 300);
@@ -2588,7 +2699,7 @@
       }
     });
     
-    // AI Chat functionality (mock responses for demo)
+    // AI Chat functionality
     const aiResponses = {
       'привет': 'Мяу! 👋 Рад тебя видеть! Я Робо-Котёнок — ассистент разработчика ботов. Чем могу помочь?',
       'здравствуй': 'Мяу! 👋 Рад тебя видеть! Я Робо-Котёнок — ассистент разработчика ботов. Чем могу помочь?',
@@ -2596,7 +2707,7 @@
       'какие боты': 'Разрабатываю разные боты: навигаторы самопомощи (@anti_q_panic_bot), пост-боты (@psixo_logos), крипто-аналитику (@cxxcrypto_watch_bot), анонимные сервисы (@crushhhhconfessionbot) и многое другое!',
       'стоит': 'Стоимость зависит от сложности проекта. Простой бот-опросник — от $300, продвинутый бот с ИИ — от $800. Давай обсудим твою задачу? Напиши @alekseyigna в Telegram!',
       'заказать': 'Легко! 🚀 Напиши @alekseyigna в Telegram с описанием задачи. Обсудим детали, сроки и стоимость. Обычно разработка занимает от 3 до 14 дней.',
-      'примеры': 'Конечно! Вот несколько проектов:\n• @anti_q_panic_bot — навигатор самопомощи при тревоге\n• @psixo_logos — пост-бот о психологии\n• @cxxcrypto_watch_bot — крипто-аналитика с прогнозами от AI\n• @crushhhhconfessionbot — анонимные признания 💕\nХочешь подробнее о каком-то?',
+      'примеры': 'Конечно! Вот несколько проектов:\n• @anti_q_panic_bot — навигатор самопомощи при тревоге 🧘\n• @psixo_logos — пост-бот о психологии 🧠\n• @cxxcrypto_watch_bot — крипто-аналитика с прогнозами от AI 💰\n• @crushhhhconfessionbot — анонимные признания 💕\nХочешь подробнее о каком-то?',
       'психология': 'Это @psixo_logos — канал-бот, который автоматически публикует полезный контент о психологии. Полностью автономный: подбирает темы, создаёт посты и публикует по расписанию.',
       'тревога': '@anti_q_panic_bot — мой любимый проект! 🧘 Навигатор самопомощи при тревоге и панических атаках. Проводит пользователя через проверенные техники дыхания и заземления за 60 секунд.',
       'крипта': '@cxxcrypto_watch_bot показывает топ-10 криптовалют, гейнеры/лузеры за 24ч и даёт прогнозы на основе AI-анализа. Идеально для трейдеров!',
@@ -2607,10 +2718,10 @@
       'прощай': 'Пока-пока! 👋 Приходи ещё! Или напиши @alekseyigna для заказа бота 😺',
       'контакты': 'Напиши разработчику в Telegram: @alekseyigna\n📧 Email: alekseignatovich@gmail.com\n📺 Канал: @bot_pro_bot_you',
       'канал': 'Подписывайся на канал @bot_pro_bot_you — там полезные материалы о ботах и автоматизации! 🤖✨',
-      'помощь': 'Я могу рассказать:\n• О проектах разработчика\n• О типах ботов\n• Как заказать разработку\n• Показать примеры работ\nПросто спроси! 😺'
+      'помощь': 'Я могу рассказать:\n• О проектах разработчика\n• О типах ботов\n• Как заказать разработку\n• Показать примеры работ\nПросто спроси! 😺',
+      'календарь': 'Это My Daily — минималистичный календарь целей для отслеживания прогресса. Доступен по ссылке: my-daily-production13.up.railway.app'
     };
     
-    // Default responses
     const defaultResponses = [
       'Интересный вопрос! 😺 Разработчик обычно отвечает на такие вопросы лично — напиши ему @alekseyigna в Telegram!',
       'Мяу... 🤔 Это лучше уточнить у разработчика. Напиши @alekseyigna — он ответит подробнее!',
@@ -2624,24 +2735,19 @@
       messageDiv.classList.add(isUser ? 'user' : 'bot');
       messageDiv.textContent = text;
       aiChatMessages.appendChild(messageDiv);
-      
-      // Scroll to bottom
       aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-      
       return messageDiv;
     }
     
     function getAIResponse(userMessage) {
       const messageLower = userMessage.toLowerCase();
       
-      // Check for keywords
       for (const [key, response] of Object.entries(aiResponses)) {
         if (messageLower.includes(key)) {
           return response;
         }
       }
       
-      // Default response
       return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
     }
     
@@ -2649,11 +2755,9 @@
       const message = aiChatInput.value.trim();
       if (!message) return;
       
-      // Add user message
       addMessage(message, true);
       aiChatInput.value = '';
       
-      // Show typing indicator
       const typingDiv = document.createElement('div');
       typingDiv.classList.add('ai-message', 'bot');
       typingDiv.textContent = 'Робо-Котёнок печатает...';
@@ -2661,13 +2765,9 @@
       aiChatMessages.appendChild(typingDiv);
       aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
       
-      // Simulate AI response delay
       setTimeout(() => {
-        // Remove typing indicator
         const indicator = document.getElementById('typingIndicator');
         if (indicator) indicator.remove();
-        
-        // Add AI response
         const response = getAIResponse(message);
         addMessage(response, false);
       }, 800 + Math.random() * 700);
@@ -2676,7 +2776,8 @@
     aiChatSend.addEventListener('click', sendMessage);
     
     aiChatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
         sendMessage();
       }
     });
@@ -2691,7 +2792,6 @@
       const card = document.getElementById(botId);
       const details = document.getElementById(`${botId}-details`);
       
-      // Close all other expanded contents first
       document.querySelectorAll('.expanded-content.active').forEach(el => {
         if (el !== details) {
           el.classList.remove('active');
@@ -2699,13 +2799,13 @@
         }
       });
       
-      // Toggle current
       const isActive = details.classList.toggle('active');
       card.classList.toggle('expanded', isActive);
       
-      // Scroll to expanded content if opened
       if (isActive) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
     }
     
@@ -2715,25 +2815,63 @@
       const isActive = content.classList.toggle('active');
       
       if (isActive) {
-        content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
     }
     
-    // Auto-play video workaround for mobile
+    // Mobile keyboard handling
+    function setupKeyboardHandling() {
+      const aiChatInput = document.getElementById('aiChatInput');
+      const aiModal = document.getElementById('aiModal');
+      
+      if (!aiChatInput || !window.visualViewport) return;
+      
+      let lastViewportHeight = window.visualViewport.height;
+      
+      window.visualViewport.addEventListener('resize', () => {
+        const currentHeight = window.visualViewport.height;
+        
+        if (currentHeight < lastViewportHeight - 50) {
+          // Keyboard opened
+          document.body.classList.add('keyboard-open');
+          setTimeout(() => {
+            aiChatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 300);
+        } 
+        else if (currentHeight > lastViewportHeight + 50) {
+          // Keyboard closed
+          document.body.classList.remove('keyboard-open');
+        }
+        
+        lastViewportHeight = currentHeight;
+      });
+      
+      aiChatInput.addEventListener('focus', () => {
+        if (window.innerWidth <= 768) {
+          setTimeout(() => {
+            aiModal.scrollTop = aiModal.scrollHeight;
+          }, 300);
+        }
+      });
+    }
+    
+    // Auto-play video workaround
     document.addEventListener('DOMContentLoaded', () => {
-      // Try to play video on user interaction
+      setupKeyboardHandling();
+      
       document.body.addEventListener('touchstart', () => {
         const kittyVideo = document.getElementById('kittyVideo');
-        kittyVideo.play().catch(e => console.log('Autoplay prevented on touch:', e));
+        kittyVideo.play().catch(e => console.log('Autoplay prevented:', e));
       }, { once: true });
       
-      // Fallback autoplay attempt
       setTimeout(() => {
         const kittyVideo = document.getElementById('kittyVideo');
         kittyVideo.play().catch(e => console.log('Autoplay prevented:', e));
       }, 1500);
       
-      // Animate skill bars when skills section is shown
+      // Animate skill bars
       const skillsSection = document.querySelector('#skills');
       if (skillsSection) {
         const observer = new IntersectionObserver((entries) => {
@@ -2785,12 +2923,10 @@
       window.requestAnimationFrame(step);
     }
     
-    // Handle window resize
     window.addEventListener('resize', () => {
       resizeCanvas();
       columns = Math.floor(canvas.width / fontSize);
       
-      // Close mobile menu on resize to desktop
       if (window.innerWidth > 1100) {
         document.getElementById('menuToggle').classList.remove('active');
         document.getElementById('sidebar').classList.remove('visible');
