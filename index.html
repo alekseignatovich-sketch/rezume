@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Алексей | Разработчик ботов и автоматизации</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
@@ -34,6 +34,7 @@
       overflow-x: hidden;
       position: relative;
       min-height: 100vh;
+      touch-action: manipulation;
     }
 
     /* Matrix background effect */
@@ -51,6 +52,48 @@
     .app-container {
       display: flex;
       min-height: 100vh;
+      position: relative;
+    }
+
+    /* Mobile menu toggle */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 200;
+      width: 48px;
+      height: 48px;
+      background: rgba(15, 15, 15, 0.9);
+      border: 1px solid var(--widget-border);
+      border-radius: 16px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
     }
 
     /* Sidebar - Mihome style */
@@ -64,6 +107,11 @@
       overflow-y: auto;
       z-index: 100;
       transition: var(--transition);
+      transform: translateX(0);
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
     }
 
     .profile {
@@ -107,20 +155,22 @@
     }
 
     .nav-item {
-      padding: 14px 16px;
+      padding: 16px 16px;
       border-radius: 12px;
       margin-bottom: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
       font-family: 'Orbitron', sans-serif;
-      font-size: 16px;
+      font-size: 17px;
       transition: var(--transition);
       position: relative;
+      min-height: 56px;
+      touch-action: manipulation;
     }
 
-    .nav-item:hover {
+    .nav-item:hover, .nav-item:focus {
       background-color: rgba(0, 255, 65, 0.08);
       transform: translateX(4px);
     }
@@ -132,8 +182,8 @@
     }
 
     .nav-item i {
-      font-size: 20px;
-      width: 24px;
+      font-size: 24px;
+      width: 28px;
       text-align: center;
     }
 
@@ -145,8 +195,14 @@
     .main-content {
       flex: 1;
       margin-left: 280px;
-      padding: 40px;
+      padding: 32px;
       max-width: 1200px;
+      width: 100%;
+      transition: margin-left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .sidebar-collapsed .main-content {
+      margin-left: 0;
     }
 
     .section {
@@ -165,41 +221,42 @@
 
     .section-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 42px;
-      margin-bottom: 30px;
+      font-size: 38px;
+      margin-bottom: 28px;
       background: linear-gradient(90deg, var(--accent), var(--accent-purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
     .section-title i {
-      font-size: 48px;
+      font-size: 42px;
     }
 
     /* Widgets grid */
     .widgets-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
       margin-top: 20px;
     }
 
     .widget {
       background-color: var(--widget-bg);
       border: 1px solid var(--widget-border);
-      border-radius: 16px;
-      padding: 25px;
+      border-radius: 18px;
+      padding: 26px;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
     }
 
     .widget:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(0, 255, 65, 0.25);
       border-color: var(--accent);
     }
 
@@ -231,62 +288,64 @@
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+      gap: 16px;
     }
 
     .stat-item {
       text-align: center;
-      padding: 15px;
-      background-color: rgba(0, 255, 65, 0.05);
-      border-radius: 10px;
+      padding: 18px;
+      background-color: rgba(0, 255, 65, 0.06);
+      border-radius: 14px;
       transition: var(--transition);
     }
 
     .stat-item:hover {
-      background-color: rgba(0, 255, 65, 0.1);
-      transform: scale(1.05);
+      background-color: rgba(0, 255, 65, 0.12);
+      transform: scale(1.04);
     }
 
     .stat-number {
       font-family: 'Orbitron', sans-serif;
-      font-size: 32px;
+      font-size: 34px;
       color: var(--accent);
-      margin: 5px 0;
+      margin: 6px 0;
+      line-height: 1.1;
     }
 
     .stat-label {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-secondary);
+      margin-top: 4px;
     }
 
     /* Projects grid */
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
       margin-top: 25px;
     }
 
     .project-card {
       background-color: var(--widget-bg);
       border: 1px solid var(--widget-border);
-      border-radius: 16px;
-      padding: 25px;
+      border-radius: 18px;
+      padding: 26px;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
     }
 
     .project-card:hover {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
       border-color: var(--accent);
-      box-shadow: 0 15px 35px rgba(108, 92, 231, 0.3);
+      box-shadow: 0 15px 35px rgba(108, 92, 231, 0.35);
     }
 
     .project-title {
       font-family: 'Orbitron', sans-serif;
       font-size: 24px;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
       color: var(--accent-purple);
       display: flex;
       align-items: center;
@@ -296,86 +355,104 @@
     .project-desc {
       color: var(--text-secondary);
       margin-bottom: 20px;
-      line-height: 1.6;
+      line-height: 1.65;
+      font-size: 16px;
     }
 
     .project-tech {
-      background-color: rgba(108, 92, 231, 0.1);
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      font-size: 14px;
+      background-color: rgba(108, 92, 231, 0.12);
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
     .project-tech-title {
       color: var(--accent-purple);
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
+      display: block;
     }
 
     .project-features {
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .feature-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 8px;
-      font-size: 14px;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
     .feature-icon {
       color: var(--accent);
-      font-size: 18px;
-      min-width: 20px;
+      font-size: 20px;
+      min-width: 24px;
+      margin-top: 3px;
     }
 
     .project-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 15px;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 18px;
     }
 
     .btn {
-      padding: 10px 20px;
-      border-radius: 50px;
+      padding: 14px 26px;
+      border-radius: 52px;
       font-family: 'Orbitron', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
       border: none;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      min-width: 140px;
+      justify-content: center;
+      touch-action: manipulation;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
     }
 
     .btn-primary {
       background-color: var(--accent);
       color: #000;
       font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
     }
 
     .btn-primary:hover {
       background-color: #00e63a;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(0, 255, 65, 0.45);
     }
 
     .btn-secondary {
       background-color: transparent;
-      border: 1px solid var(--accent);
+      border: 2px solid var(--accent);
       color: var(--accent);
     }
 
     .btn-secondary:hover {
-      background-color: rgba(0, 255, 65, 0.1);
+      background-color: rgba(0, 255, 65, 0.08);
+      transform: translateY(-2px);
     }
 
     /* Skills section */
     .skills-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
       gap: 30px;
       margin-top: 30px;
     }
@@ -383,213 +460,252 @@
     .skill-category {
       background-color: var(--widget-bg);
       border: 1px solid var(--widget-border);
-      border-radius: 16px;
-      padding: 25px;
+      border-radius: 18px;
+      padding: 28px;
     }
 
     .skill-category-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 22px;
-      margin-bottom: 20px;
+      font-size: 23px;
+      margin-bottom: 22px;
       color: var(--accent-purple);
     }
 
     .skill-item {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .skill-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      align-items: center;
     }
 
     .skill-name {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 17px;
     }
 
     .skill-level {
       color: var(--accent);
       font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      min-width: 50px;
+      text-align: right;
     }
 
     .skill-bar {
-      height: 8px;
-      background-color: rgba(0, 255, 65, 0.1);
-      border-radius: 4px;
+      height: 10px;
+      background-color: rgba(0, 255, 65, 0.08);
+      border-radius: 6px;
       overflow: hidden;
     }
 
     .skill-progress {
       height: 100%;
       background: linear-gradient(90deg, var(--accent), var(--accent-purple));
-      border-radius: 4px;
+      border-radius: 6px;
       width: 0%;
-      transition: width 1.5s ease-out;
+      transition: width 1.6s ease-out;
     }
 
     /* Services section */
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 25px;
-      margin-top: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 26px;
+      margin-top: 28px;
     }
 
     .service-card {
       background-color: var(--widget-bg);
       border: 1px solid var(--widget-border);
-      border-radius: 16px;
-      padding: 25px;
+      border-radius: 18px;
+      padding: 28px;
       position: relative;
+      transition: var(--transition);
     }
 
     .service-card:hover {
       border-color: var(--accent);
-      transform: scale(1.03);
+      transform: scale(1.025);
+      box-shadow: 0 8px 25px rgba(108, 92, 231, 0.25);
     }
 
     .service-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 22px;
-      margin-bottom: 15px;
+      font-size: 23px;
+      margin-bottom: 18px;
       color: var(--accent);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 11px;
     }
 
     .service-items {
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .service-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
+      gap: 11px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.6;
     }
 
     .service-price {
       font-family: 'Orbitron', sans-serif;
-      font-size: 20px;
+      font-size: 22px;
       color: var(--accent-purple);
-      margin-top: 15px;
+      margin-top: 16px;
       font-weight: bold;
+      padding-top: 12px;
+      border-top: 1px dashed var(--widget-border);
     }
 
     /* Contacts section */
     .contacts-container {
-      max-width: 700px;
+      max-width: 720px;
       margin: 0 auto;
       background-color: var(--widget-bg);
       border: 1px solid var(--widget-border);
-      border-radius: 16px;
-      padding: 40px;
+      border-radius: 20px;
+      padding: 42px 35px;
       text-align: center;
     }
 
     .contact-item {
-      margin: 25px 0;
+      margin: 28px 0;
     }
 
     .contact-label {
-      font-size: 16px;
+      font-size: 18px;
       color: var(--text-secondary);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       display: block;
+      font-weight: 500;
     }
 
     .contact-value {
       font-family: 'Orbitron', sans-serif;
-      font-size: 24px;
+      font-size: 26px;
       color: var(--accent);
       word-break: break-all;
+      line-height: 1.4;
     }
 
     .contact-value a {
       color: var(--accent);
       text-decoration: none;
       transition: var(--transition);
+      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 14px;
+      margin: 0 4px;
     }
 
     .contact-value a:hover {
       text-shadow: 0 0 15px var(--accent);
+      background: rgba(0, 255, 65, 0.1);
     }
 
     .location-item {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      font-size: 18px;
+      gap: 12px;
+      font-size: 20px;
       color: var(--text-secondary);
-      margin-top: 10px;
+      margin-top: 12px;
+      font-weight: 500;
     }
 
     /* Robo-Kitty Video Assistant */
     .robo-kitty-container {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 280px;
+      bottom: 24px;
+      right: 24px;
+      width: 260px;
       z-index: 1000;
-      border-radius: 20px;
+      border-radius: 22px;
       overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.8);
       border: 2px solid var(--accent);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: var(--transition);
     }
 
     .robo-kitty-video {
       width: 100%;
       display: block;
-      border-radius: 20px;
-      cursor: pointer;
+      border-radius: 22px;
       transition: var(--transition);
     }
 
     .robo-kitty-video:hover {
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
 
     .robo-kitty-label {
       position: absolute;
-      bottom: 15px;
+      bottom: 18px;
       left: 0;
       right: 0;
       text-align: center;
       font-family: 'Orbitron', sans-serif;
       color: var(--accent);
-      font-size: 16px;
-      text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
+      font-size: 17px;
+      text-shadow: 0 0 12px rgba(0, 255, 65, 0.8);
       z-index: 10;
       pointer-events: none;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Backdrop for mobile menu */
+    .backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .backdrop.active {
+      opacity: 1;
+      pointer-events: all;
     }
 
     /* Responsive */
     @media (max-width: 1100px) {
       .sidebar {
-        width: 80px;
-        padding: 25px 10px;
+        width: 260px;
+        transform: translateX(-100%);
       }
-      .profile-name,
-      .profile-location,
-      .profile-rating,
-      .nav-item span {
-        display: none;
-      }
-      .nav-item {
-        justify-content: center;
-        padding: 16px;
-      }
-      .nav-item i {
-        font-size: 24px;
+      .sidebar.visible {
+        transform: translateX(0);
       }
       .main-content {
-        margin-left: 80px;
-        padding: 30px;
+        margin-left: 0;
+        padding: 28px 24px;
+      }
+      .menu-toggle {
+        display: flex;
+      }
+      .section-title {
+        font-size: 36px;
+      }
+      .section-title i {
+        font-size: 40px;
       }
       .widgets-grid,
       .projects-grid,
@@ -600,38 +716,177 @@
         grid-template-columns: 1fr;
       }
       .robo-kitty-container {
-        width: 220px;
+        width: 240px;
         bottom: 20px;
         right: 20px;
+      }
+      .robo-kitty-label {
+        font-size: 16px;
+        bottom: 16px;
       }
     }
 
     @media (max-width: 768px) {
       .sidebar {
-        width: 70px;
+        width: 280px;
+        height: 100%;
+        overflow-y: auto;
       }
-      .main-content {
-        margin-left: 70px;
-        padding: 20px;
+      .profile-name {
+        font-size: 26px;
+      }
+      .nav-item {
+        padding: 18px 20px;
+        font-size: 18px;
+        gap: 18px;
+      }
+      .nav-item i {
+        font-size: 26px;
+        width: 30px;
       }
       .section-title {
+        font-size: 34px;
+      }
+      .section-title i {
+        font-size: 38px;
+      }
+      .widget, .project-card, .service-card, .skill-category {
+        padding: 24px;
+        border-radius: 20px;
+      }
+      .widget-title, .project-title, .service-title {
+        font-size: 21px;
+      }
+      .stat-number {
         font-size: 32px;
       }
+      .stat-label {
+        font-size: 14px;
+      }
+      .btn {
+        padding: 16px 28px;
+        font-size: 17px;
+        min-width: 150px;
+      }
+      .contacts-container {
+        padding: 35px 25px;
+      }
+      .contact-label {
+        font-size: 17px;
+      }
+      .contact-value {
+        font-size: 24px;
+      }
+      .location-item {
+        font-size: 19px;
+      }
       .robo-kitty-container {
-        width: 180px;
-        bottom: 15px;
-        right: 15px;
+        width: 220px;
+        bottom: 16px;
+        right: 16px;
+      }
+      .robo-kitty-label {
+        font-size: 15px;
+        bottom: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        width: 100%;
+        max-width: 320px;
+      }
+      .profile-name {
+        font-size: 24px;
+      }
+      .profile-rating {
+        font-size: 15px;
+      }
+      .nav-item {
+        padding: 16px 18px;
+        font-size: 17px;
+        gap: 16px;
+      }
+      .nav-item i {
+        font-size: 24px;
+      }
+      .section-title {
+        font-size: 30px;
+        gap: 12px;
+      }
+      .section-title i {
+        font-size: 34px;
+      }
+      .widget, .project-card, .service-card {
+        padding: 22px;
+        border-radius: 18px;
+      }
+      .widget-title, .project-title, .service-title {
+        font-size: 20px;
+      }
+      .project-desc, .service-item, .feature-item {
+        font-size: 15px;
+      }
+      .stat-number {
+        font-size: 30px;
+      }
+      .stat-item {
+        padding: 16px;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .btn {
+        padding: 15px 24px;
+        font-size: 16px;
+        min-width: 140px;
+        width: 100%;
+      }
+      .project-actions {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .contacts-container {
+        padding: 30px 20px;
+        border-radius: 18px;
+      }
+      .contact-label {
+        font-size: 16px;
+      }
+      .contact-value {
+        font-size: 22px;
+      }
+      .robo-kitty-container {
+        width: 190px;
+        bottom: 14px;
+        right: 14px;
       }
       .robo-kitty-label {
         font-size: 14px;
+        bottom: 12px;
+      }
+      .menu-toggle {
+        width: 46px;
+        height: 46px;
+      }
+      .menu-toggle span {
+        width: 22px;
       }
     }
 
     /* Icons (using Unicode symbols) */
     .icon {
       display: inline-block;
-      width: 24px;
+      width: 26px;
       text-align: center;
+      font-size: 24px;
+    }
+
+    /* Prevent zoom on input focus (iOS) */
+    input, textarea, select, button {
+      font-size: 16px;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
   </style>
 </head>
@@ -639,10 +894,20 @@
   <!-- Matrix background -->
   <canvas id="matrix"></canvas>
 
+  <!-- Mobile menu toggle -->
+  <div class="menu-toggle" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Backdrop for mobile menu -->
+  <div class="backdrop" id="backdrop"></div>
+
   <!-- App layout -->
   <div class="app-container">
     <!-- Sidebar (Mihome style) -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
       <div class="profile">
         <div class="profile-name">Алексей</div>
         <div class="profile-location">🇧🇾 Беларусь</div>
@@ -692,14 +957,14 @@
         <div class="widgets-grid">
           <div class="widget">
             <h2 class="widget-title"><span class="icon">👋</span> Приветствие</h2>
-            <p style="font-size: 18px; line-height: 1.7; color: var(--text-secondary);">
+            <p style="font-size: 17px; line-height: 1.75; color: var(--text-secondary);">
               👋 Привет! Я Алексей — разработчик умных ботов и систем автоматизации.<br><br>
               🤖 Создаю многоязычных ботов для бизнеса под ключ.<br>
               ⚡ Автоматизирую рутинные процессы и синхронизацию контента.<br>
               📦 Разрабатываю цифровые продукты для продажи в Telegram и на маркетплейсах.<br>
               🤯 Внедряю искусственный интеллект в повседневные задачи.
             </p>
-            <div style="display: flex; gap: 15px; margin-top: 25px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 28px;">
               <button class="btn btn-primary" onclick="navigateTo('bots')">
                 <span class="icon">🤖</span> Мои боты
               </button>
@@ -733,7 +998,7 @@
 
           <div class="widget">
             <h2 class="widget-title"><span class="icon">🎯</span> Специализация</h2>
-            <ul style="list-style: none; padding-left: 0; line-height: 2.2;">
+            <ul style="list-style: none; padding-left: 0; line-height: 2.3; font-size: 16px;">
               <li>🤖 Telegram боты (каталоги, опросники, техподдержка)</li>
               <li>⚡ Системы автоматизации бизнес-процессов</li>
               <li>📦 Цифровые товары для продажи</li>
@@ -744,20 +1009,21 @@
 
           <div class="widget">
             <h2 class="widget-title"><span class="icon">🚀</span> Последние проекты</h2>
-            <ul style="list-style: none; padding-left: 0; line-height: 2;">
+            <ul style="list-style: none; padding-left: 0; line-height: 2.1; font-size: 16px;">
               <li>📦 Бот-каталог с корзиной и оплатой</li>
               <li>🤔 Бот-опросник для сбора ТЗ</li>
               <li>🛎️ Бот техподдержки с AI-ответами</li>
               <li>⏰ Бот-напоминалка для бизнеса</li>
               <li>🧭 Бот-гид по услугам компании</li>
               <li>🎣 Бот-лидмагнит с геймификацией</li>
-              <li style="margin-top: 15px;"><button class="btn btn-secondary" onclick="navigateTo('bots')">Все проекты →</button></li>
+              <li style="margin-top: 18px;"><button class="btn btn-secondary" onclick="navigateTo('bots')">Все проекты →</button></li>
             </ul>
           </div>
         </div>
       </section>
 
-      <!-- Bots Section -->
+      <!-- Bots Section (остальные секции остаются без изменений для краткости) -->
+      <!-- Для экономии места я оставлю только структуру, полный код всех секций будет в финальном файле -->
       <section id="bots" class="section">
         <h1 class="section-title"><span class="icon">🤖</span> Мои боты</h1>
         <div class="projects-grid">
@@ -766,7 +1032,7 @@
             <h2 class="project-title"><span class="icon">📦</span> Бот-каталог</h2>
             <p class="project-desc">Интерактивный каталог товаров с возможностью заказа и оплаты прямо в Telegram.</p>
             <div class="project-tech">
-              <div class="project-tech-title">🛠️ Технологии:</div>
+              <span class="project-tech-title">🛠️ Технологии:</span>
               Telegram Bot API, База данных, Система корзины, Интеграция платежей
             </div>
             <div class="project-features">
@@ -788,13 +1054,13 @@
               <button class="btn btn-secondary">Подробнее</button>
             </div>
           </div>
-
-          <!-- Бот-опросник -->
+          
+          <!-- Остальные боты (опросник, техподдержка и т.д.) - структура аналогична -->
           <div class="project-card">
             <h2 class="project-title"><span class="icon">🤔</span> Бот-опросник</h2>
             <p class="project-desc">Сбор информации от клиентов для автоматического формирования технического задания.</p>
             <div class="project-tech">
-              <div class="project-tech-title">🛠️ Технологии:</div>
+              <span class="project-tech-title">🛠️ Технологии:</span>
               Динамические формы, Валидация данных, Экспорт в ТЗ, Примеры в полях ввода
             </div>
             <div class="project-features">
@@ -816,13 +1082,12 @@
               <button class="btn btn-secondary">Подробнее</button>
             </div>
           </div>
-
-          <!-- Бот техподдержки -->
+          
           <div class="project-card">
             <h2 class="project-title"><span class="icon">🛎️</span> Бот техподдержки</h2>
             <p class="project-desc">Автоматизированная поддержка клиентов с креативными и юмористическими AI-ответами.</p>
             <div class="project-tech">
-              <div class="project-tech-title">🛠️ Технологии:</div>
+              <span class="project-tech-title">🛠️ Технологии:</span>
               NLP обработка запросов, База знаний, Эскалация к оператору, Мультиязычность
             </div>
             <div class="project-features">
@@ -844,13 +1109,12 @@
               <button class="btn btn-secondary">Подробнее</button>
             </div>
           </div>
-
-          <!-- Бот-напоминалка -->
+          
           <div class="project-card">
             <h2 class="project-title"><span class="icon">⏰</span> Бот-напоминалка</h2>
             <p class="project-desc">Система напоминаний о сроках, времени, ошибках и улучшениях для бизнеса.</p>
             <div class="project-tech">
-              <div class="project-tech-title">🛠️ Технологии:</div>
+              <span class="project-tech-title">🛠️ Технологии:</span>
               Планировщик задач, Уведомления, Интеграция с календарём, Персонализация
             </div>
             <div class="project-features">
@@ -872,13 +1136,12 @@
               <button class="btn btn-secondary">Подробнее</button>
             </div>
           </div>
-
-          <!-- Бот-гид по услугам -->
+          
           <div class="project-card">
             <h2 class="project-title"><span class="icon">🧭</span> Бот-гид по услугам</h2>
             <p class="project-desc">Интерактивный гид по услугам компании с подробными описаниями и возможностью записи.</p>
             <div class="project-tech">
-              <div class="project-tech-title">🛠️ Технологии:</div>
+              <span class="project-tech-title">🛠️ Технологии:</span>
               Дерево услуг, Поиск и фильтрация, Запись на услугу, Интеграция с CRM
             </div>
             <div class="project-features">
@@ -900,13 +1163,12 @@
               <button class="btn btn-secondary">Подробнее</button>
             </div>
           </div>
-
-          <!-- Бот-лидмагнит -->
+          
           <div class="project-card">
             <h2 class="project-title"><span class="icon">🎣</span> Бот-лидмагнит</h2>
             <p class="project-desc">Привлечение и сбор контактов потенциальных клиентов с геймификацией и юмором.</p>
             <div class="project-tech">
-              <div class="project-tech-title">🛠️ Технологии:</div>
+              <span class="project-tech-title">🛠️ Технологии:</span>
               Виральный маркетинг, Геймификация, CRM интеграция, A/B тестирование
             </div>
             <div class="project-features">
@@ -935,20 +1197,19 @@
       <section id="automation" class="section">
         <h1 class="section-title"><span class="icon">⚡</span> Автоматизация</h1>
         <div class="widgets-grid">
-          <!-- Система синхронизации контента -->
           <div class="widget">
             <h2 class="widget-title"><span class="icon">🔄</span> Система синхронизации контента</h2>
-            <p class="project-desc" style="margin-bottom: 20px;">
+            <p class="project-desc" style="margin-bottom: 22px; font-size: 16px;">
               Автоматическая синхронизация публикаций между сайтом, социальными сетями и YouTube.
             </p>
-            <div style="background-color: rgba(108, 92, 231, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 25px;">
-              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 8px;">🔄 Схема работы:</div>
-              <div style="display: flex; align-items: center; gap: 10px; font-family: 'Orbitron', sans-serif; justify-content: center;">
-                <span style="color: var(--accent);">Telegram</span>
-                <span>→</span>
-                <span style="color: var(--accent);">Админ-панель</span>
-                <span>→</span>
-                <span style="color: var(--accent);">Все платформы</span>
+            <div style="background-color: rgba(108, 92, 231, 0.12); padding: 16px; border-radius: 14px; margin-bottom: 26px;">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 10px; font-size: 16px;">🔄 Схема работы:</div>
+              <div style="display: flex; align-items: center; gap: 12px; font-family: 'Orbitron', sans-serif; justify-content: center; flex-wrap: wrap;">
+                <span style="color: var(--accent); font-size: 17px;">Telegram</span>
+                <span style="font-size: 20px;">→</span>
+                <span style="color: var(--accent); font-size: 17px;">Админ-панель</span>
+                <span style="font-size: 20px;">→</span>
+                <span style="color: var(--accent); font-size: 17px;">Все платформы</span>
               </div>
             </div>
             <div class="project-features">
@@ -969,20 +1230,19 @@
                 <span>Поддержка: сайт, Telegram, Instagram, VK, YouTube</span>
               </div>
             </div>
-            <div style="margin-top: 25px;">
+            <div style="margin-top: 26px;">
               <button class="btn btn-primary">Демо системы</button>
             </div>
           </div>
 
-          <!-- Автономная система создания контента -->
           <div class="widget">
             <h2 class="widget-title"><span class="icon">🤖</span> Автономная система создания контента</h2>
-            <p class="project-desc" style="margin-bottom: 20px;">
+            <p class="project-desc" style="margin-bottom: 22px; font-size: 16px;">
               Полностью автоматизированная система, которая сама выбирает темы, создаёт и публикует контент для продажи.
             </p>
-            <div style="background-color: rgba(108, 92, 231, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 25px;">
-              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 8px;">🔄 Этапы автоматизации:</div>
-              <ol style="padding-left: 20px; color: var(--text-secondary);">
+            <div style="background-color: rgba(108, 92, 231, 0.12); padding: 16px; border-radius: 14px; margin-bottom: 26px;">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 10px; font-size: 16px;">🔄 Этапы автоматизации:</div>
+              <ol style="padding-left: 22px; color: var(--text-secondary); line-height: 1.7; font-size: 15px;">
                 <li>Сбор трендов и актуальных тем</li>
                 <li>Генерация материала (обучающий контент, гайды)</li>
                 <li>Автоматическая публикация</li>
@@ -1007,15 +1267,14 @@
                 <span>Минимальное участие человека на всех этапах</span>
               </div>
             </div>
-            <div style="margin-top: 25px;">
+            <div style="margin-top: 26px;">
               <button class="btn btn-primary">Подробнее о системе</button>
             </div>
           </div>
 
-          <!-- Календарь проектов с AI -->
           <div class="widget">
             <h2 class="widget-title"><span class="icon">📅</span> Календарь проектов с ИИ</h2>
-            <p class="project-desc" style="margin-bottom: 20px;">
+            <p class="project-desc" style="margin-bottom: 22px; font-size: 16px;">
               Умный календарь для управления проектами с поддержкой искусственного интеллекта.
             </p>
             <div class="project-features">
@@ -1040,7 +1299,7 @@
                 <span>AI-помощник для оптимизации графика и приоритетов</span>
               </div>
             </div>
-            <div style="margin-top: 25px;">
+            <div style="margin-top: 26px;">
               <button class="btn btn-primary">Демо календаря</button>
             </div>
           </div>
@@ -1051,15 +1310,14 @@
       <section id="digital" class="section">
         <h1 class="section-title"><span class="icon">📦</span> Цифровые товары</h1>
         <div class="widgets-grid">
-          <!-- Шаблоны ботов -->
           <div class="widget">
             <h2 class="widget-title"><span class="icon">📐</span> Шаблоны ботов</h2>
-            <p class="project-desc" style="margin-bottom: 25px;">
+            <p class="project-desc" style="margin-bottom: 26px; font-size: 16px;">
               Продажа готовых шаблонов ботов с возможностью настройки под конкретного клиента.
             </p>
-            <div style="margin-bottom: 25px;">
-              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 15px;">📦 Доступные шаблоны:</div>
-              <ul style="list-style: none; padding-left: 0; line-height: 2.2; color: var(--text-secondary);">
+            <div style="margin-bottom: 26px;">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 16px; font-size: 17px;">📦 Доступные шаблоны:</div>
+              <ul style="list-style: none; padding-left: 0; line-height: 2.3; color: var(--text-secondary); font-size: 16px;">
                 <li>• Бот-каталог — от $99</li>
                 <li>• Бот-опросник — от $79</li>
                 <li>• Бот техподдержки — от $129</li>
@@ -1068,9 +1326,9 @@
                 <li>• Бот-лидмагнит — от $149</li>
               </ul>
             </div>
-            <div style="background-color: rgba(0, 255, 65, 0.08); padding: 15px; border-radius: 10px; margin-bottom: 25px;">
-              <div style="font-weight: bold; color: var(--accent); margin-bottom: 8px;">✨ Что входит:</div>
-              <ul style="list-style: none; padding-left: 0; line-height: 1.8; font-size: 14px;">
+            <div style="background-color: rgba(0, 255, 65, 0.09); padding: 16px; border-radius: 14px; margin-bottom: 26px;">
+              <div style="font-weight: bold; color: var(--accent); margin-bottom: 10px; font-size: 16px;">✨ Что входит:</div>
+              <ul style="list-style: none; padding-left: 0; line-height: 1.9; font-size: 15px;">
                 <li>✓ Готовый рабочий код</li>
                 <li>✓ Подробная документация</li>
                 <li>✓ Настройка под клиента</li>
@@ -1086,7 +1344,6 @@
       <section id="services" class="section">
         <h1 class="section-title"><span class="icon">🎯</span> Услуги</h1>
         <div class="services-grid">
-          <!-- Разработка ботов -->
           <div class="service-card">
             <h2 class="service-title"><span class="icon">🤖</span> Разработка ботов</h2>
             <div class="service-items">
@@ -1110,7 +1367,6 @@
             <div class="service-price">От $300</div>
           </div>
 
-          <!-- Автоматизация процессов -->
           <div class="service-card">
             <h2 class="service-title"><span class="icon">⚡</span> Автоматизация процессов</h2>
             <div class="service-items">
@@ -1134,7 +1390,6 @@
             <div class="service-price">От $500</div>
           </div>
 
-          <!-- Цифровые продукты -->
           <div class="service-card">
             <h2 class="service-title"><span class="icon">📱</span> Цифровые продукты</h2>
             <div class="service-items">
@@ -1158,7 +1413,6 @@
             <div class="service-price">От $800</div>
           </div>
 
-          <!-- AI интеграции -->
           <div class="service-card">
             <h2 class="service-title"><span class="icon">🤯</span> AI интеграции</h2>
             <div class="service-items">
@@ -1182,8 +1436,8 @@
             <div class="service-price">От $1000</div>
           </div>
         </div>
-        <div style="text-align: center; margin-top: 40px;">
-          <button class="btn btn-primary" style="padding: 15px 40px; font-size: 18px;" onclick="navigateTo('contacts')">
+        <div style="text-align: center; margin-top: 45px;">
+          <button class="btn btn-primary" style="padding: 16px 45px; font-size: 19px;" onclick="navigateTo('contacts')">
             <span class="icon">📩</span> Заказать услугу
           </button>
         </div>
@@ -1193,7 +1447,6 @@
       <section id="skills" class="section">
         <h1 class="section-title"><span class="icon">📊</span> Навыки</h1>
         <div class="skills-container">
-          <!-- Technical Skills -->
           <div class="skill-category">
             <h2 class="skill-category-title">💻 Технические навыки</h2>
             <div class="skill-item">
@@ -1261,7 +1514,6 @@
             </div>
           </div>
 
-          <!-- Soft Skills -->
           <div class="skill-category">
             <h2 class="skill-category-title">🧠 Мягкие навыки</h2>
             <div class="skill-item">
@@ -1326,7 +1578,7 @@
       <section id="stats" class="section">
         <h1 class="section-title"><span class="icon">📈</span> Статистика</h1>
         <div class="widgets-grid">
-          <div class="widget" style="grid-column: span 2;">
+          <div class="widget" style="grid-column: span 1;">
             <h2 class="widget-title"><span class="icon">📊</span> Live Statistics</h2>
             <div class="stats-grid">
               <div class="stat-item">
@@ -1386,12 +1638,12 @@
             <span class="contact-label">📍 Локация</span>
             <div class="location-item">🇧🇾 Беларусь</div>
           </div>
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--widget-border);">
-            <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 20px;">
+          <div style="margin-top: 35px; padding-top: 24px; border-top: 1px solid var(--widget-border);">
+            <p style="color: var(--text-secondary); font-size: 17px; margin-bottom: 24px; line-height: 1.6;">
               Готов обсудить ваш проект и предложить решение под ваши задачи!
             </p>
-            <a href="https://t.me/alekseyigna" target="_blank">
-              <button class="btn btn-primary" style="padding: 12px 35px; font-size: 16px;">
+            <a href="https://t.me/alekseyigna" target="_blank" style="display: inline-block; text-decoration: none;">
+              <button class="btn btn-primary" style="padding: 15px 40px; font-size: 18px; width: auto;">
                 <span class="icon">💬</span> Написать в Telegram
               </button>
             </a>
@@ -1407,7 +1659,7 @@
       <source src="video.mp4" type="video/mp4">
       Ваш браузер не поддерживает видео.
     </video>
-    <div class="robo-kitty-label">🐱🤖 Robo-Kitty Assistant</div>
+    <div class="robo-kitty-label">🐱🤖 Robo-Kitty</div>
   </div>
 
   <script>
@@ -1415,12 +1667,16 @@
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
     
     const letters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789';
     const fontSize = 16;
-    const columns = canvas.width / fontSize;
+    let columns = Math.floor(canvas.width / fontSize);
     
     const drops = [];
     for (let i = 0; i < columns; i++) {
@@ -1450,6 +1706,18 @@
     
     // Navigation
     function navigateTo(sectionId) {
+      // Close mobile menu if open
+      const sidebar = document.getElementById('sidebar');
+      const menuToggle = document.getElementById('menuToggle');
+      const backdrop = document.getElementById('backdrop');
+      
+      if (window.innerWidth <= 1100) {
+        sidebar.classList.remove('visible');
+        menuToggle.classList.remove('active');
+        backdrop.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+      
       // Remove active class from all sections and nav items
       document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
@@ -1462,7 +1730,7 @@
       document.getElementById(sectionId).classList.add('active');
       document.querySelector(`.nav-item[data-section="${sectionId}"]`).classList.add('active');
       
-      // Scroll to top
+      // Scroll to top smoothly
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
@@ -1472,19 +1740,59 @@
         const sectionId = item.getAttribute('data-section');
         navigateTo(sectionId);
       });
+      
+      // Add touch feedback for mobile
+      item.addEventListener('touchstart', () => {
+        item.style.transform = 'translateX(6px)';
+      });
+      
+      item.addEventListener('touchend', () => {
+        item.style.transform = '';
+      });
+    });
+    
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('backdrop');
+    
+    menuToggle.addEventListener('click', () => {
+      const isActive = menuToggle.classList.toggle('active');
+      sidebar.classList.toggle('visible', isActive);
+      backdrop.classList.toggle('active', isActive);
+      document.body.style.overflow = isActive ? 'hidden' : 'auto';
+    });
+    
+    backdrop.addEventListener('click', () => {
+      menuToggle.classList.remove('active');
+      sidebar.classList.remove('visible');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = 'auto';
     });
     
     // Robo-Kitty video interaction
     const roboKitty = document.getElementById('roboKitty');
+    const kittyVideo = document.getElementById('kittyVideo');
     
-    roboKitty.addEventListener('click', () => {
+    roboKitty.addEventListener('click', (e) => {
+      e.stopPropagation();
       // Open Telegram on click
       window.open('https://t.me/alekseyigna', '_blank');
     });
     
-    // Animate skill bars when skills section is shown
+    // Auto-play video workaround for mobile
     document.addEventListener('DOMContentLoaded', () => {
-      // Start skill animations when section is visible
+      // Try to play video on user interaction
+      document.body.addEventListener('touchstart', () => {
+        kittyVideo.play().catch(e => console.log('Autoplay prevented on touch:', e));
+      }, { once: true });
+      
+      // Fallback autoplay attempt
+      setTimeout(() => {
+        kittyVideo.play().catch(e => console.log('Autoplay prevented:', e));
+      }, 1500);
+      
+      // Animate skill bars when skills section is shown
       const skillsSection = document.querySelector('#skills');
       if (skillsSection) {
         const observer = new IntersectionObserver((entries) => {
@@ -1520,12 +1828,6 @@
         }, { threshold: 0.3 });
         observer.observe(statsSection);
       }
-      
-      // Auto-play video workaround for mobile
-      setTimeout(() => {
-        const video = document.getElementById('kittyVideo');
-        video.play().catch(e => console.log('Autoplay prevented:', e));
-      }, 1000);
     });
     
     function animateCounter(id, start, end, duration) {
@@ -1542,11 +1844,29 @@
       window.requestAnimationFrame(step);
     }
     
-    // Responsive sidebar
+    // Handle window resize
     window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      resizeCanvas();
+      columns = Math.floor(canvas.width / fontSize);
+      
+      // Close mobile menu on resize to desktop
+      if (window.innerWidth > 1100) {
+        document.getElementById('menuToggle').classList.remove('active');
+        document.getElementById('sidebar').classList.remove('visible');
+        document.getElementById('backdrop').classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
     });
+    
+    // Prevent zoom on double-tap (iOS)
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
