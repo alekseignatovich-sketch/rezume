@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
     :root {
       --bg-dark: #0a0a0a;
@@ -1391,20 +1390,21 @@
             <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 20px;">
               Готов обсудить ваш проект и предложить решение под ваши задачи!
             </p>
-            <button class="btn btn-primary" style="padding: 12px 35px; font-size: 16px;">
-              <span class="icon">💬</span> Написать в Telegram
-            </button>
+            <a href="https://t.me/alekseyigna" target="_blank">
+              <button class="btn btn-primary" style="padding: 12px 35px; font-size: 16px;">
+                <span class="icon">💬</span> Написать в Telegram
+              </button>
+            </a>
           </div>
         </div>
       </section>
     </div>
   </div>
 
-  <!-- Robo-Kitty Assistant (Video) -->
+  <!-- Robo-Kitty Assistant (Video from root) -->
   <div class="robo-kitty-container" id="roboKitty">
-    <video class="robo-kitty-video" id="kittyVideo" muted loop playsinline>
-      <!-- Замени на свою ссылку на видео с роботом-котёнком -->
-      <source src="https://storage.googleapis.com/coverr-main/mp4/Beach-1280x720.mp4" type="video/mp4">
+    <video class="robo-kitty-video" id="kittyVideo" muted autoplay loop playsinline>
+      <source src="video.mp4" type="video/mp4">
       Ваш браузер не поддерживает видео.
     </video>
     <div class="robo-kitty-label">🐱🤖 Robo-Kitty Assistant</div>
@@ -1475,53 +1475,57 @@
     });
     
     // Robo-Kitty video interaction
-    const kittyVideo = document.getElementById('kittyVideo');
     const roboKitty = document.getElementById('roboKitty');
     
     roboKitty.addEventListener('click', () => {
-      // Показать уведомление с информацией
-      alert('🐱🤖 Привет! Я Робо-Котёнок — ассистент Алексея!\n\nХочешь узнать о его проектах? Напиши ему в Telegram: @alekseyigna');
+      // Open Telegram on click
+      window.open('https://t.me/alekseyigna', '_blank');
     });
     
     // Animate skill bars when skills section is shown
     document.addEventListener('DOMContentLoaded', () => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            document.querySelectorAll('.skill-progress').forEach(bar => {
-              const percent = bar.getAttribute('data-percent');
-              bar.style.width = percent + '%';
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.5 });
-      
+      // Start skill animations when section is visible
       const skillsSection = document.querySelector('#skills');
       if (skillsSection) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              document.querySelectorAll('.skill-progress').forEach(bar => {
+                const percent = bar.getAttribute('data-percent');
+                bar.style.width = percent + '%';
+              });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
         observer.observe(skillsSection);
       }
       
       // Animate stats counters
-      const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            animateCounter('bots-count', 0, 15, 1000);
-            animateCounter('auto-count', 0, 28, 1200);
-            animateCounter('products-count', 0, 50, 1400);
-            animateCounter('langs-count', 0, 5, 800);
-            animateCounter('hours-count', 0, 1000, 1600);
-            animateCounter('projects-count', 0, 24, 1300);
-            animateCounter('clients-count', 0, 18, 1500);
-            statsObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.5 });
-      
       const statsSection = document.querySelector('#stats');
       if (statsSection) {
-        statsObserver.observe(statsSection);
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              animateCounter('bots-count', 0, 15, 1000);
+              animateCounter('auto-count', 0, 28, 1200);
+              animateCounter('products-count', 0, 50, 1400);
+              animateCounter('langs-count', 0, 5, 800);
+              animateCounter('hours-count', 0, 1000, 1600);
+              animateCounter('projects-count', 0, 24, 1300);
+              animateCounter('clients-count', 0, 18, 1500);
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(statsSection);
       }
+      
+      // Auto-play video workaround for mobile
+      setTimeout(() => {
+        const video = document.getElementById('kittyVideo');
+        video.play().catch(e => console.log('Autoplay prevented:', e));
+      }, 1000);
     });
     
     function animateCounter(id, start, end, duration) {
@@ -1538,25 +1542,7 @@
       window.requestAnimationFrame(step);
     }
     
-    // Responsive sidebar toggle (for mobile)
-    let sidebarExpanded = true;
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 1100 && sidebarExpanded) {
-        document.querySelector('.sidebar').style.width = '80px';
-        document.querySelectorAll('.profile-name, .profile-location, .profile-rating, .nav-item span').forEach(el => {
-          el.style.display = 'none';
-        });
-        sidebarExpanded = false;
-      } else if (window.innerWidth > 1100 && !sidebarExpanded) {
-        document.querySelector('.sidebar').style.width = '280px';
-        document.querySelectorAll('.profile-name, .profile-location, .profile-rating, .nav-item span').forEach(el => {
-          el.style.display = 'block';
-        });
-        sidebarExpanded = true;
-      }
-    });
-    
-    // Set canvas size on resize
+    // Responsive sidebar
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
